@@ -1,6 +1,655 @@
-*.class
+import java.util.Scanner;
+public class Exp
+{
+     
+    public static void main(String[] args)
+    {  
+        int var = 1;
+        Directions directionsObject = new Directions();
+        game1 SinglePlayerObject = new game1();
+        game2 MultiPlayerObject = new game2();
+         
+        while (var == 1)
+        {
+            Scanner com = new Scanner(System.in);
+            int option; 
+            System.out.println("---[CHOPSTICKS]---");
+            System.out.println("Enter '0' for directions");
+            System.out.println("Enter '1' for single-player");
+            System.out.println("Enter '2' for two-player");
+            System.out.println("To quit, enter '7'");
+            
+            option = com.nextInt();
+            
+            switch(option)
+            {
+            case 0:
+                directionsObject.message();
+                break;
+            case 1:
+                SinglePlayerObject.SinglePlayer();
+                break;
+            case 2:
+                MultiPlayerObject.MultiPlayer();
+                break;
+            case 7:
+                var++;
+                break;
+            default:
+                System.out.println("Command not recognized. Try again.");
+                System.out.println(" ");
+                System.out.println(" ");
+            }
+        }
+    }
+}
 
-# Package Files #
-*.jar
-*.war
-*.ear
+class Directions
+{
+     
+    public void message()
+    {
+        int varD = 1;
+        while (varD == 1)
+        {
+            Scanner Dcom = new Scanner(System.in);
+         
+            System.out.println("");
+            System.out.println("----[Directions]----");
+            System.out.println("To start, each player (you and your opponent) has two");
+            System.out.println("counters, each with the value one. Then, the first player");
+            System.out.println("selects one of their opponent's counters to attack. When");
+            System.out.println("a counter is attacked, the one attacked adds the value of");
+            System.out.println("the attacker's counter to his own. The its his opponent's");
+            System.out.println("turn to attack. When a counter reaches 5, the counter is");
+            System.out.println("disabled. The game continues until both of one player's");
+            System.out.println("counters are disabled.");
+            System.out.println("");
+            System.out.println("Also, at every turn, you have the option to 'split' or");
+            System.out.println("redistribute, your counters. You transfer any amount of");
+            System.out.println("counts from one counter to the other. As long as you aren't");
+            System.out.println("simply switching the values or overloading and effectively");
+            System.out.println("disabling a counter, it will be allowed.");
+            System.out.println("");
+            System.out.println("Hit enter to return to menu.");
+            System.out.println("");
+             
+            int rav = Dcom.nextInt();
+            switch(rav)
+            {
+            default:
+                varD++;
+                break;
+            }
+        }
+    }
+}
+
+class game1
+{
+    Exp menuObject = new Exp();
+//    private String SplitCheck;
+    private int temp = 1;
+    private int SPLIToper1, SPLIToper2;
+    private int loop1 = 1;
+    private int turn1 = 1;
+    private int opp1 = 1, opp2 = 1, player1 = 1, player2 = 1;
+    private int  attacker;
+    private int target;
+    Scanner g1com = new Scanner(System.in);
+     
+    public void SinglePlayer ()
+    {      
+        while (loop1 == 1)
+        {
+            while(turn1 == 1)
+            {
+                CheckForDisable();
+                CheckGameEnd();
+                 
+                System.out.println("");
+                System.out.println("                 1    2");
+                System.out.println("------------------------");
+                System.out.println("Opponent:        " + opp1 + " || " + opp2);
+                System.out.println("");
+                System.out.println("You:             " + player1 + " || " + player2);
+                System.out.println("");
+                 
+                CheckGameEnd();
+                if(temp == 1)
+                {
+                    CheckSplitOrHit();
+                }
+                temp = 1;
+                 
+                GetTargets();
+                 
+                ChangeValues();
+                 
+                turn1++;
+                 
+            }
+            while(turn1 == 2)
+            {
+                CheckForDisable();
+                 
+                System.out.println("");
+                System.out.println("                 1    2");
+                System.out.println("------------------------");
+                System.out.println("Opponent:        " + opp1 + " || " + opp2);
+                System.out.println("");
+                System.out.println("You:             " + player1 + " || " + player2);
+                System.out.println("");
+                 
+                CheckGameEnd();
+                 
+                System.out.println("");
+                System.out.println("Your opponent is thinking......");
+                System.out.println("");
+                     
+                AIchangerMAIN();
+                turn1--;
+            }
+        }
+        menuObject.main(null);
+    }
+    private void CheckForDisable ()
+    {
+        if(opp1 >=5)
+        {
+            opp1 = 0;
+        }
+        if(opp2 >=5)
+        {
+            opp2 = 0;
+        }
+        if(player1 >=5)
+        {
+            player1 = 0;
+        }
+        if(player2 >=5)
+        {
+            player2 = 0;
+        }
+    }
+    private void CheckGameEnd()
+    {
+        if(opp1 == 0 && opp2 == 0)
+        {
+            System.out.println("");
+            System.out.println("                 1    2");
+            System.out.println("------------------------");
+            System.out.println("Opponent:        " + opp1 + " || " + opp2);
+            System.out.println("");
+            System.out.println("You:             " + player1 + " || " + player2);
+            System.out.println("");
+             
+            System.out.println("Congrats! You won!");
+            System.out.println("");
+            menuObject.main(null);
+        }
+        if(player1 == 0 && player2 == 0)
+        {
+            System.out.println("");
+            System.out.println("                 1    2");
+            System.out.println("------------------------");
+            System.out.println("Opponent:        " + opp1 + " || " + opp2);
+            System.out.println("");
+            System.out.println("You:             " + player1 + " || " + player2);
+            System.out.println("");
+             
+            System.out.println("Sorry. You Lost.");
+            System.out.println("");
+            menuObject.main(null);
+        }
+    }
+    private void CheckSplitOrHit()
+    {
+        System.out.println("Would you like to split?('1' for yes, anything else for no)");
+         
+        int SplitCheck = g1com.nextInt();
+         
+        switch(SplitCheck)
+        {
+        case 1:
+            SPLIT();
+            break;
+        default:
+        }
+    }
+    private void GetTargets ()
+    {      
+        if(player1 == 0)
+        {
+            System.out.println("You have to use the right side.");
+            System.out.println("");
+            attacker = 2;
+             
+            if(opp1 == 0)
+            {
+                System.out.println("You have to attack the right side.");
+                System.out.println("");
+                target = 2;
+            }
+            else if(opp2 == 0)
+            {
+                System.out.println("You have to attack the left side.");
+                System.out.println("");
+                target = 1;
+            }
+            else
+            {
+                System.out.println("Which side do you want to attack?(enter '1' or '2')");
+                target = g1com.nextInt();
+            }                      
+        }
+        else if(player2 == 0)
+        {
+            System.out.println("You have to use the left side.");
+            System.out.println("");
+            attacker = 1;
+             
+            if(opp1 == 0)
+            {
+                System.out.println("You have to attack the right side.");
+                System.out.println("");
+                target = 2;
+            }
+            else if(opp2 == 0)
+            {
+                System.out.println("You have to attack the left side.");
+                System.out.println("");
+                target = 1;
+            }
+            else
+            {
+                System.out.println("Which side do you want to attack?(enter '1' or '2')");
+                target = g1com.nextInt();
+            }
+        }
+        else
+        {
+            System.out.println("Which side would you like to use?(enter '1' or '2')");
+            attacker = g1com.nextInt();
+            if(opp1 == 0)
+            {
+                System.out.println("You have to attack the right side.");
+                System.out.println("");
+                target = 2;
+            }
+            else if(opp2 == 0)
+            {
+                System.out.println("You have to attack the left side.");
+                System.out.println("");
+                target = 1;
+            }
+            else
+            {
+                System.out.println("Which side do you want to attack?(enter '1' or '2')");
+                target = g1com.nextInt();
+            }
+        }
+    }
+    private void ChangeValues()
+    {
+        if(attacker < 3 && attacker > 0 && target < 3 && target > 0)
+        {
+            switch(attacker)
+            {
+            case 1:
+                switch(target)
+                {
+                case 1:
+                    opp1 = opp1 + player1;
+                    break;
+                case 2:
+                    opp2 = opp2 + player1;
+                    break;
+                }
+                break;
+            case 2:
+                switch(target)
+                {
+                case 1:
+                    opp1 = opp1 + player2;
+                    break;
+                case 2:
+                    opp2 = opp2 + player2;
+                    break;
+                }
+                break; 
+            default:
+                break;
+            }
+        }
+        else
+        {
+            System.out.println("One of your inputs was faulty. When selecting sides, use '1' or '2'.");
+            SinglePlayer();
+        }
+    }
+    //
+    //
+    private void SPLIT()
+    {
+        SPLIToper1 = 0;
+        SPLIToper2 = 0;
+         
+        if(player1 + player2 == 2)
+        {
+            System.out.println("Enter the value you want for your left counter.");
+            SPLIToper1 = g1com.nextInt();
+            System.out.println("Enter the value you want for your right counter.");
+            SPLIToper2 = g1com.nextInt();
+             
+            if(SPLIToper1 + SPLIToper2 == 2 && SPLIToper1 != player1 && SPLIToper1 != player2)
+            {
+                player1 = SPLIToper1;
+                player2 = SPLIToper2;
+                turn1++;
+            }
+            else
+            {
+                System.out.println("That doesn't add up..... You should attack");
+            }
+             
+            SinglePlayer();
+        }
+        else if(player1 + player2 == 4)
+        {
+            System.out.println("Enter the value you want for your left counter.");
+            SPLIToper1 = g1com.nextInt();
+            System.out.println("Enter the value you want for your right counter.");
+            SPLIToper2 = g1com.nextInt();
+             
+            if(SPLIToper1 + SPLIToper2 == 4 && SPLIToper1 != player1 && SPLIToper1 != player2)
+            {
+                player1 = SPLIToper1;
+                player2 = SPLIToper2;
+                turn1++;
+            }
+            else
+            {
+                System.out.println("That doesn't add up..... You should attack");
+            }
+             
+            SinglePlayer();
+        }
+        else if(player1 + player2 == 6)
+        {
+            System.out.println("Enter the value you want for your left counter.");
+            SPLIToper1 = g1com.nextInt();
+            System.out.println("Enter the value you want for your right counter.");
+            SPLIToper2 = g1com.nextInt();
+             
+            if(SPLIToper1 + SPLIToper2 == 6 && SPLIToper1 != player1 && SPLIToper1 <= 4 && SPLIToper2 <= 4 && SPLIToper1 != player2)
+            {
+                player1 = SPLIToper1;
+                player2 = SPLIToper2;
+                turn1++;
+            }
+            else
+            {
+                System.out.println("That doesn't add up..... You should attack");
+            }
+             
+            SinglePlayer();
+        }
+        else if(player1 + player2 == 8)
+        {
+            System.out.println("Enter the value you want for your left counter.");
+            SPLIToper1 = g1com.nextInt();
+            System.out.println("Enter the value you want for your right counter.");
+            SPLIToper2 = g1com.nextInt();
+             
+            if(SPLIToper1 + SPLIToper2 == 8 && SPLIToper1 != player1 && SPLIToper1 <= 4 && SPLIToper2 <= 4 && SPLIToper1 != player2)
+            {
+                player1 = SPLIToper1;
+                player2 = SPLIToper2;
+                turn1++;
+            }
+            else
+            {
+                System.out.println("That doesn't add up..... You should attack.");
+            }
+             
+            SinglePlayer();
+        }
+        else
+        {
+            System.out.println("You can't split. You have to attack.");
+            temp++;
+            SinglePlayer();
+        }
+    }
+    //
+    //methods after here are for AI.
+    //
+    private void AIchangerMAIN()
+    {
+        if(opp1 + player1 >= 5 && player2 == 0)
+        {
+            player1 += opp1;
+        }
+        else if(opp2 + player1 >= 5 && player2 == 0)
+        {
+            player1 += opp2;
+        }
+        else if(opp1 + player2 >= 5 && player1 == 0)
+        {
+            player2 += opp1;
+        }
+        else if(opp2 + player2 >= 5 && player1 == 0)
+        {
+            player2 += opp2;
+        }
+        else if(opp1 + opp2 == 2 && opp1 != 1)
+        {
+            System.out.println("Your opponent split.");
+             
+                opp1 = 1;
+                opp2 = 1;
+        }
+        else if(opp1 + opp2 == 4 && opp1 != 2)
+        {
+ 
+            System.out.println("Your opponent split.");
+             
+            if(opp1 == 3)
+            {
+                opp1 = 2;
+                opp2 = 2;              
+            }
+            else if(opp1 == 1)
+            {
+                opp1 = 2;
+                opp2 = 2;
+            }
+            else if(opp1 == 4)
+            {
+                opp1 = 2;
+                opp2 = 2;              
+            }
+            else if(opp1 == 0)
+            {
+                opp1 = 2;
+                opp2 = 2;
+            }
+            else
+            {
+                System.out.println("something weird happened...");
+            }
+        }
+        else if(opp1 + player1 >= 5)
+        {
+            player1 += opp1;
+        }
+        else if(opp2 + player1 >= 5)
+        {
+            player1 += opp2;
+        }
+        else if(opp1 + player2 >= 5)
+        {
+            player2 += opp1;
+        }
+        else if(opp2 + player2 >= 5)
+        {
+            player2 += opp2;
+        }
+        else if(opp1 == 0 && player1 == 0)
+        {
+            player2 += opp2;
+        }
+        else if(opp2 == 0 && player1 == 0)
+        {
+            player2 += opp1;
+        }
+        else if(opp1 == 0 && player2 == 0)
+        {
+            player1 += opp2;
+        }
+        else if(opp2 == 0 && player1 == 0)
+        {
+            player2 += opp1;
+        }
+        else if(opp1 == 1 && opp2 == 2 && player1 == 0 && player2 == 1)
+        {
+            player2 += opp1;
+        }
+        else if(opp1 == 1 && opp2 == 2 && player2 == 0 && player1 == 1)
+        {
+            player1 += opp1;
+        }
+        else if(opp1 == 2 && opp2 == 1 && player1 == 0 && player2 == 1)
+        {
+            player2 += opp1;
+        }
+        else if(opp1 == 2 && opp2 == 1 && player2 == 0 && player1 == 1)
+        {
+            player1 += opp1;
+        }
+        else
+        {
+            if(opp1 != 0 && opp2 != 0 && player1 != 0 && player2 !=0)
+            {
+                if(opp1 < opp2)
+                {
+                    if(player1 < player2)
+                    {
+                        player1 += opp1;
+                    }
+                    else if(player2 < player1)
+                    {
+                        player2 += opp1;
+                    }
+                    else
+                    {
+                        player1 += opp1;
+                    }
+                }
+                else if(opp2 < opp1)
+                {
+                    if(player1 < player2)
+                    {
+                        player1 += opp2;
+                    }
+                    else if(player2 < player1)
+                    {
+                        player2 += opp2;
+                    }
+                    else
+                    {
+                        player1 += opp2;
+                    }              
+                }
+                else
+                {
+                    player1 += opp2;
+                }
+            }
+            else if(player1 == 0 || player2 == 0)
+            {
+                if((player1 <= 3  && opp1 != 0 && opp2 != 0) || (player2 <= 3 && opp1 != 0 && opp2 != 0))
+                {
+                    if(player1 > player2)
+                    {
+                        if(opp1 > opp2)
+                        {
+                            player1 += opp1;
+                        }
+                        else
+                        {
+                            player1 += opp2;
+                        }
+                    }
+                    else
+                    {
+                        if(opp1 > opp2)
+                        {
+                            player2 += opp1;
+                        }
+                        else
+                        {
+                            player2 += opp2;
+                        }                      
+                    }
+                }
+                else if(opp1 < opp2)
+                {
+                    player2 += opp1;
+                }
+                else
+                {
+                    player2 += opp2;
+                }
+            }
+            else if(opp1 == 0)
+            {
+                if(player1 < player2 && player1 != 0)
+                {
+                    player1 += opp2;
+                }
+                else
+                {
+                    player2 += opp2;
+                }
+            }
+            else if(opp2 == 0)
+            {
+                if(player1 < player2 && player2 != 0)
+                {
+                    player1 += opp1;
+                }
+                else
+                {
+                    player2 += opp1;
+                }              
+            }
+            else
+            {
+                if(opp1 > opp2)
+                {
+                    if(player1 > player2)
+                    {
+                        player1 += opp1;
+                    }
+                    else
+                    {
+                        player2 += opp1;
+                    }
+                }
+                else
+                {
+                    if(player2 > player1)
+                    {
+                        player2 += opp1;
+                    }
+                    else
+                    {
+                        player1 += opp1;
+                    }                  
+                }
+            }
+        }
+    }
+}
